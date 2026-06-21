@@ -64,6 +64,13 @@ html.lenis, html.lenis body { height: auto; }
 .arch { border-radius: 50% 50% 0.5rem 0.5rem / 38% 38% 0.5rem 0.5rem; }
 .arch-tall { border-radius: 50% 50% 0.75rem 0.75rem / 30% 30% 0.5rem 0.5rem; }
 
+/* Restore the alternating arch/oval row on wider screens, where the
+   signature dishes lay out in a single row instead of the 2-col grid. */
+@media (min-width: 1024px) {
+  .lg-arch { border-radius: 50% 50% 0.75rem 0.75rem / 30% 30% 0.5rem 0.5rem; }
+  .lg-oval { border-radius: 50%; }
+}
+
 /* ---------- Outline / stroke text ---------- */
 .text-stroke-clay {
   -webkit-text-stroke: 2px var(--clay);

@@ -6,10 +6,13 @@ import { motion } from "framer-motion";
 import { Reveal, staggerParent, staggerItem } from "@/components/Reveal";
 
 const dishes = [
-  { name: "Lamb Mandi", tag: "The Signature", img: "/img/pro-mandi-meat.jpg" },
-  { name: "Sizzling Fahsa", tag: "Stone Pot", img: "/img/pro-fahsa.jpg" },
-  { name: "Sanani Saltah", tag: "National Dish", img: "/img/pro-saltah2.jpg" },
-  { name: "Kebab Sanani", tag: "Charcoal", img: "/img/pro-kebab.jpg" },
+  // shape: how each card is masked. On the mobile 2-col grid the top row is
+  // [arch, oval] and the bottom row alternates to [oval, arch]. On lg the
+  // cards form a single row, so we restore the arch/oval/arch/oval rhythm.
+  { name: "Lamb Mandi", tag: "The Signature", img: "/img/pro-mandi-meat.jpg", shape: "arch-tall" },
+  { name: "Sizzling Fahsa", tag: "Stone Pot", img: "/img/pro-fahsa.jpg", shape: "rounded-[50%]" },
+  { name: "Sanani Saltah", tag: "National Dish", img: "/img/pro-saltah2.jpg", shape: "rounded-[50%] lg-arch" },
+  { name: "Kebab Sanani", tag: "Charcoal", img: "/img/pro-kebab.jpg", shape: "arch-tall lg-oval" },
 ];
 
 export default function Signatures() {
@@ -42,7 +45,7 @@ export default function Signatures() {
           {dishes.map((d, i) => (
             <motion.div key={d.name} variants={staggerItem} className={i % 2 === 1 ? "lg:mt-16" : ""}>
               <div className="group relative">
-                <div className={`${i % 2 === 0 ? "arch-tall" : "rounded-[50%]"} overflow-hidden ring-1 ring-ink/10 shadow-xl`}>
+                <div className={`${d.shape} overflow-hidden ring-1 ring-ink/10 shadow-xl`}>
                   <div className="relative aspect-[3/4]">
                     <Image
                       src={d.img}
