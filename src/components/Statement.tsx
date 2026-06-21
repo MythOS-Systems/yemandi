@@ -8,7 +8,7 @@ import { Reveal } from "@/components/Reveal";
 export default function Statement() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
+  const imgY = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
 
   return (
     <section ref={ref} className="relative bg-night text-paper overflow-hidden py-24 sm:py-36">
@@ -68,7 +68,7 @@ export default function Statement() {
         <div className="lg:col-span-5 order-1 lg:order-2">
           <Reveal y={48} className="relative mx-auto max-w-sm">
             <div className="rounded-[50%] overflow-hidden ring-1 ring-paper/15 shadow-2xl">
-              <motion.div style={{ y: imgY }} className="relative aspect-[4/5] scale-125">
+              <motion.div style={{ y: imgY }} className="relative aspect-[4/5] scale-110">
                 <Image src="/img/pro-saltah.jpg" alt="Sizzling Yemeni saltah in a stone pot" fill className="object-cover" sizes="(max-width:1024px) 80vw, 420px" />
               </motion.div>
             </div>

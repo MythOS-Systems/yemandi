@@ -14,6 +14,10 @@ export interface SwipeCard {
 // A swipeable stacked-card deck. Drag/swipe the top card left or right
 // (works with touch AND mouse) to send it to the back and reveal the next.
 // No hover required; infinite loop; mobile-friendly.
+//
+// Cards are keyed by identity (not stack position) so Framer animates each
+// card smoothly between positions instead of remounting it on every swipe —
+// the incoming card rises cleanly to the front with no fade-in flash.
 export function StackedCardsSwipe({
   cards,
   className = "",
@@ -23,6 +27,7 @@ export function StackedCardsSwipe({
 }) {
   const [index, setIndex] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const [flinging, setFlinging] = useState(false);
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-220, 0, 220], [-14, 0, 14]);
   const n = cards.length;
@@ -36,9 +41,13 @@ export function StackedCardsSwipe({
     const vx = info.velocity.x;
     if (Math.abs(dx) > 90 || Math.abs(vx) > 500) {
       const dir = dx > 0 ? 1 : -1;
-      animate(x, dir * 520, { duration: 0.28, ease: "easeIn" }).then(() => {
+      // fling the top card off-screen, then advance the deck. The new top
+      // card eases up from its peek position via its `animate` target.
+      setFlinging(true);
+      animate(x, dir * 520, { duration: 0.3, ease: "easeIn" }).then(() => {
         setIndex((i) => (i + 1) % n);
         x.set(0);
+        setFlinging(false);
       });
     } else {
       animate(x, 0, { type: "spring", stiffness: 320, damping: 30 });
@@ -46,13 +55,17 @@ export function StackedCardsSwipe({
   }
 
   return (
-    <div className={`relative w-full max-w-[360px] mx-auto aspect-[3/4] select-none ${className}`}>
+    <div className={`relative w-full max-w-[300px] mx-auto aspect-[3/4] select-none ${className}`}>
       {/* render back-to-front so the top card is last in DOM */}
       {visible
         .map((ci, pos) => ({ ci, pos }))
         .reverse()
         .map(({ ci, pos }) => {
           const isTop = pos === 0;
+          // the live drag motion value drives the top card only while it is
+          // being dragged or flung off — otherwise the card follows its
+          // resting `animate` target so position changes stay smooth.
+          const bindX = isTop && (dragging || flinging);
           const card = cards[ci];
           // fanned-out resting positions: top centered, others peek left/right
           const fanX = pos === 1 ? -52 : pos === 2 ? 52 : 0;
@@ -60,17 +73,17 @@ export function StackedCardsSwipe({
           const fanS = pos === 0 ? 1 : 0.92;
           return (
             <motion.div
-              key={`${ci}-${pos}`}
+              key={ci}
               className="absolute inset-0"
               style={{
                 zIndex: 10 - pos,
-                ...(isTop ? { x, rotate } : {}),
+                ...(bindX ? { x, rotate } : {}),
                 cursor: isTop ? (dragging ? "grabbing" : "grab") : "default",
               }}
               initial={{ x: fanX, rotate: fanR, scale: fanS, opacity: 0 }}
-              animate={isTop ? { scale: fanS, opacity: 1 } : { x: fanX, rotate: fanR, scale: fanS, opacity: 1 }}
+              animate={bindX ? { opacity: 1 } : { x: fanX, rotate: fanR, scale: fanS, opacity: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 28 }}
-              drag={isTop ? "x" : false}
+              drag={isTop && !flinging ? "x" : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.7}
               onDragStart={() => setDragging(true)}
@@ -84,7 +97,7 @@ export function StackedCardsSwipe({
                     fill
                     draggable={false}
                     className="object-cover pointer-events-none"
-                    sizes="360px"
+                    sizes="300px"
                   />
                 </div>
                 <div className="px-5 pb-4 pt-1 flex items-center justify-between gap-3">
