@@ -3,67 +3,74 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Wordmark from "@/components/Wordmark";
+import Image from "next/image";
 import { site } from "@/lib/site";
 
-const navLinks = [
-  { href: "/menu", label: "Menu" },
-  { href: "/about", label: "Our Story" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/catering", label: "Catering" },
-  { href: "/visit", label: "Visit" },
+// External links open in a new tab; internal use Next Link.
+const links = [
+  { label: "Menu", href: "/menu", ext: false },
+  { label: "Reserve a Table", href: site.reserve, ext: true },
+  { label: "Join Waitlist", href: site.waitlist, ext: true },
+  { label: "Catering", href: site.cateringLead, ext: true },
+  { label: "Loyalty", href: site.loyalty, ext: true },
 ];
 
 export default function Navigation() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => setIsOpen(false), [pathname]);
+  useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-pine-deep/95 backdrop-blur-md shadow-2xl py-2.5" : "bg-gradient-to-b from-pine-deep/70 to-transparent py-4"}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <Wordmark className="shrink-0" tone="light" />
+    <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-paper/90 backdrop-blur-md border-b border-ink/10 py-3" : "py-5"}`}>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-6">
+        <Link href="/" className="shrink-0">
+          <Image src="/img/yemandi-logo.png" alt="Yemandi Yemeni Cuisine" width={360} height={144} priority className={`w-auto transition-all duration-300 ${scrolled ? "h-14 sm:h-16" : "h-16 sm:h-20"}`} />
+        </Link>
 
-          <div className="hidden md:flex items-center gap-9">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className={`relative transition-colors text-[11px] uppercase tracking-[0.22em] font-semibold group ${pathname === link.href ? "text-gold" : "text-cream/80 hover:text-cream"}`}>
-                {link.label}
-                <span className={`absolute -bottom-1 left-0 h-px bg-gold transition-all duration-300 ${pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`} />
+        <div className="hidden lg:flex items-center gap-7">
+          {links.map((l) =>
+            l.ext ? (
+              <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="text-[11px] uppercase tracking-[0.18em] font-bold text-ink/70 hover:text-clay transition-colors">
+                {l.label}
+              </a>
+            ) : (
+              <Link key={l.label} href={l.href} className={`text-[11px] uppercase tracking-[0.18em] font-bold transition-colors ${pathname === l.href ? "text-clay" : "text-ink/70 hover:text-clay"}`}>
+                {l.label}
               </Link>
-            ))}
-            <a href={site.order} target="_blank" rel="noopener noreferrer" className="bg-copper text-pine-deep px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] font-bold hover:bg-gold transition-all hover:-translate-y-px">
-              Order Online
-            </a>
-          </div>
-
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-cream p-2 relative w-10 h-10 flex items-center justify-center" aria-label={isOpen ? "Close menu" : "Open menu"} aria-expanded={isOpen}>
-            <div className="relative w-5 h-4">
-              <span className={`absolute left-0 w-full h-px bg-cream transition-all duration-300 ${isOpen ? "top-1/2 rotate-45" : "top-0"}`} />
-              <span className={`absolute left-0 top-1/2 w-full h-px bg-cream transition-all duration-300 ${isOpen ? "opacity-0" : "opacity-100"}`} />
-              <span className={`absolute left-0 w-full h-px bg-cream transition-all duration-300 ${isOpen ? "top-1/2 -rotate-45" : "top-full"}`} />
-            </div>
-          </button>
+            )
+          )}
+          <a href={site.order} target="_blank" rel="noopener noreferrer" className="bg-ink text-paper px-6 py-2.5 text-[11px] uppercase tracking-[0.16em] font-bold hover:bg-clay transition-colors">
+            Order Online
+          </a>
         </div>
+
+        <button onClick={() => setOpen(!open)} className="lg:hidden w-10 h-10 flex items-center justify-center text-ink" aria-label="Menu" aria-expanded={open}>
+          <div className="relative w-6 h-4">
+            <span className={`absolute left-0 w-full h-0.5 bg-ink transition-all ${open ? "top-1/2 rotate-45" : "top-0"}`} />
+            <span className={`absolute left-0 top-1/2 w-full h-0.5 bg-ink transition-all ${open ? "opacity-0" : ""}`} />
+            <span className={`absolute left-0 w-full h-0.5 bg-ink transition-all ${open ? "top-1/2 -rotate-45" : "top-full"}`} />
+          </div>
+        </button>
       </div>
 
-      <div className={`md:hidden overflow-hidden transition-all duration-500 ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
-        <div className="bg-pine-deep/98 backdrop-blur-md border-t border-cream/5 px-6 py-6 space-y-1">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className={`block transition-colors text-sm uppercase tracking-[0.2em] py-3 border-b border-cream/5 ${pathname === link.href ? "text-gold" : "text-cream/70 hover:text-cream"}`}>
-              {link.label}
-            </Link>
-          ))}
-          <a href={site.order} target="_blank" rel="noopener noreferrer" className="block bg-copper text-pine-deep px-5 py-3 text-sm uppercase tracking-[0.15em] font-bold text-center mt-4">
+      <div className={`lg:hidden overflow-hidden transition-all duration-500 ${open ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"}`}>
+        <div className="bg-paper border-t border-ink/10 px-6 py-5 space-y-1 mt-3">
+          {links.map((l) =>
+            l.ext ? (
+              <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="block py-3 text-sm uppercase tracking-[0.18em] font-bold text-ink/80 border-b border-ink/5">{l.label}</a>
+            ) : (
+              <Link key={l.label} href={l.href} className="block py-3 text-sm uppercase tracking-[0.18em] font-bold text-ink/80 border-b border-ink/5">{l.label}</Link>
+            )
+          )}
+          <a href={site.order} target="_blank" rel="noopener noreferrer" className="block bg-ink text-paper text-center px-6 py-3 mt-4 text-sm uppercase tracking-[0.16em] font-bold">
             Order Online
           </a>
         </div>

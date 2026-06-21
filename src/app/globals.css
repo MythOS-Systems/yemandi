@@ -1,89 +1,86 @@
 @import "tailwindcss";
 
-/* Yemandi — mocha + terracotta + honey on oat cream (Sana'a desert warmth).
-   Token names kept generic-internal; values define this site's identity. */
+/* ============================================================
+   YEMANDI — art-directed design system
+   Disciplined palette: warm paper + clay red + charcoal,
+   saffron + night as supporting tones. Built for motion.
+   ============================================================ */
 :root {
-  --pine: #4A3322;        /* mocha brown */
-  --pine-deep: #2B1C12;   /* espresso — dark sections / hero */
-  --pom: #C25A33;         /* terracotta clay — accent on light */
-  --pom-deep: #97401F;    /* burnt clay */
-  --copper: #CC8B2C;      /* honey amber */
-  --gold: #E6AE4C;        /* honey gold highlight */
-  --cream: #F4ECDD;       /* oat cream */
-  --sand: #E1CFA8;        /* sand */
-  --ink: #221710;         /* deep espresso ink */
+  --paper: #F3EAD8;       /* warm oat paper — primary background */
+  --paper-2: #EADfca;     /* slightly deeper paper */
+  --clay: #C0492B;        /* clay red — the bold brand color */
+  --clay-deep: #8E2F1C;   /* deep clay */
+  --saffron: #DA9127;     /* saffron/amber accent */
+  --night: #20140D;       /* near-black warm charcoal — dark sections */
+  --ink: #2A1B11;         /* body text on paper */
 }
 
 @theme inline {
-  --color-pine: var(--pine);
-  --color-pine-deep: var(--pine-deep);
-  --color-pom: var(--pom);
-  --color-pom-deep: var(--pom-deep);
-  --color-copper: var(--copper);
-  --color-gold: var(--gold);
-  --color-cream: var(--cream);
-  --color-sand: var(--sand);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-clay: var(--clay);
+  --color-clay-deep: var(--clay-deep);
+  --color-saffron: var(--saffron);
+  --color-night: var(--night);
   --color-ink: var(--ink);
   --font-display: var(--font-display-family);
   --font-body: var(--font-body-family);
+  --font-serif: var(--font-serif-family);
 }
 
-body {
-  background: var(--cream);
+html, body {
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Sana'a qamariya (stained-glass arch) inspired lattice */
-.tile-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='84' height='84' viewBox='0 0 84 84' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234A3322' fill-opacity='0.05'%3E%3Cpath d='M42 6a18 18 0 0118 18v18H24V24A18 18 0 0142 6z' opacity='0.5'/%3E%3Ccircle cx='42' cy='30' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
+/* Lenis smooth scroll */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
 
-.tile-pattern-dark {
-  background-image: url("data:image/svg+xml,%3Csvg width='84' height='84' viewBox='0 0 84 84' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23E6AE4C' fill-opacity='0.07'%3E%3Cpath d='M42 6a18 18 0 0118 18v18H24V24A18 18 0 0142 6z' opacity='0.5'/%3E%3Ccircle cx='42' cy='30' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
+/* Display type tuning — poster scale, tight */
+.font-display { font-family: var(--font-display), sans-serif; }
+.tracking-tighter2 { letter-spacing: -0.03em; }
 
-@media (prefers-reduced-motion: no-preference) {
-  .fade-in-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
-  .fade-in-up.visible { opacity: 1; transform: translateY(0); }
-  .fade-in-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
-  .fade-in-left.visible { opacity: 1; transform: translateX(0); }
-  .fade-in-right { opacity: 0; transform: translateX(40px); transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
-  .fade-in-right.visible { opacity: 1; transform: translateX(0); }
-  .scale-in { opacity: 0; transform: scale(0.92); transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
-  .scale-in.visible { opacity: 1; transform: scale(1); }
+/* ---------- Kinetic marquee rows ---------- */
+@keyframes marquee-l {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
-
+@keyframes marquee-r {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.marquee { display: flex; width: max-content; will-change: transform; }
+.marquee-l { animation: marquee-l var(--dur, 36s) linear infinite; }
+.marquee-r { animation: marquee-r var(--dur, 36s) linear infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .fade-in-up, .fade-in-left, .fade-in-right, .scale-in { opacity: 1; transform: none; }
+  .marquee-l, .marquee-r { animation: none; }
 }
 
-html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+/* ---------- Arch mask (Sana'a qamariya window) ---------- */
+.arch { border-radius: 50% 50% 0.5rem 0.5rem / 38% 38% 0.5rem 0.5rem; }
+.arch-tall { border-radius: 50% 50% 0.75rem 0.75rem / 30% 30% 0.5rem 0.5rem; }
 
-.menu-scroll::-webkit-scrollbar { display: none; }
-.menu-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-
-.glow-copper { box-shadow: 0 0 30px rgba(204,139,44,0.18), 0 0 60px rgba(204,139,44,0.06); }
-
-.text-gradient-gold {
-  background: linear-gradient(135deg, var(--gold), var(--copper));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ---------- Outline / stroke text ---------- */
+.text-stroke-clay {
+  -webkit-text-stroke: 2px var(--clay);
+  color: transparent;
+}
+.text-stroke-ink {
+  -webkit-text-stroke: 1.5px var(--ink);
+  color: transparent;
 }
 
-.text-gradient-pom {
-  background: linear-gradient(135deg, #D86B40, var(--pom-deep));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ---------- Reveal helpers (used by framer too, fallback) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes kenburns {
-    0% { transform: scale(1.05) translate(0,0); }
-    100% { transform: scale(1.18) translate(-2%, -1.5%); }
-  }
-  .animate-kenburns { animation: kenburns 24s ease-in-out infinite alternate; }
-}
+::selection { background: var(--clay); color: var(--paper); }
+
+/* Hide scrollbars on horizontal strips */
+.noscroll::-webkit-scrollbar { display: none; }
+.noscroll { -ms-overflow-style: none; scrollbar-width: none; }

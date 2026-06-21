@@ -1,18 +1,26 @@
 import type { Metadata } from "next";
-import { Spectral, Mukta } from "next/font/google";
+import { Oswald, Hanken_Grotesk, Cormorant_Garamond } from "next/font/google";
+import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
-const display = Spectral({
+const display = Oswald({
   variable: "--font-display-family",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-const body = Mukta({
+const body = Hanken_Grotesk({
   variable: "--font-body-family",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Elegant high-contrast serif for accent moments ("key places where it pops").
+const serif = Cormorant_Garamond({
+  variable: "--font-serif-family",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -54,8 +62,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} antialiased`}>
-      <body className="min-h-screen flex flex-col">{children}</body>
+    <html lang="en" className={`${display.variable} ${body.variable} ${serif.variable} antialiased`}>
+      <body className="min-h-screen flex flex-col">
+        <SmoothScroll />
+        {children}
+      </body>
     </html>
   );
 }
